@@ -62,7 +62,11 @@ impl HebbianMemory {
         let mut pairs: Vec<_> = self
             .weights
             .get(&concept.to_ascii_lowercase())
-            .map(|row| row.iter().map(|(key, value)| (key.clone(), *value)).collect())
+            .map(|row| {
+                row.iter()
+                    .map(|(key, value)| (key.clone(), *value))
+                    .collect()
+            })
             .unwrap_or_default();
         pairs.sort_by(|a, b| b.1.total_cmp(&a.1));
         pairs.truncate(limit);

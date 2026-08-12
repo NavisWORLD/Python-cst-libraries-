@@ -2,8 +2,7 @@ use std::fs;
 use std::sync::{Arc, Mutex};
 
 use cosmic_rust::{
-    check_preflight, Dyn12, Event, EventBus, GaussianSynapse, HebbianMemory, Lorenz,
-    SemanticMemory,
+    check_preflight, Dyn12, Event, EventBus, GaussianSynapse, HebbianMemory, Lorenz, SemanticMemory,
 };
 
 #[test]

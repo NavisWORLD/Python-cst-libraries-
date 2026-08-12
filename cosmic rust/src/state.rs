@@ -120,7 +120,11 @@ impl DynamicState {
     }
 
     pub fn l2(&self) -> f64 {
-        self.values.iter().map(|value| value * value).sum::<f64>().sqrt()
+        self.values
+            .iter()
+            .map(|value| value * value)
+            .sum::<f64>()
+            .sqrt()
     }
 }
 

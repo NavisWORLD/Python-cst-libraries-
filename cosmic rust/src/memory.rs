@@ -66,7 +66,8 @@ impl SemanticMemory {
             confidence: confidence.clamp(0.0, 1.0),
         };
         self.next_id += 1;
-        self.embeddings.push(hashed_embedding(&record.text, self.dimension));
+        self.embeddings
+            .push(hashed_embedding(&record.text, self.dimension));
         self.records.push(record.clone());
         self.append(&record)?;
         Ok(record)
@@ -150,7 +151,8 @@ impl SemanticMemory {
                 confidence,
             };
             self.next_id = self.next_id.max(id + 1);
-            self.embeddings.push(hashed_embedding(&record.text, self.dimension));
+            self.embeddings
+                .push(hashed_embedding(&record.text, self.dimension));
             self.records.push(record);
         }
         Ok(())

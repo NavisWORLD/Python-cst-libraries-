@@ -5,11 +5,7 @@ fn main() -> Result<(), String> {
     let reply = runtime.respond("music follows rhythm")?;
     println!("{reply}");
 
-    let states = vec![
-        vec![0.0, 0.0],
-        vec![1.0, 0.5],
-        vec![0.2, 1.0],
-    ];
+    let states = vec![vec![0.0, 0.0], vec![1.0, 0.5], vec![0.2, 1.0]];
     let diagnostics = GaussianSynapse::auto().diagnostics(&states)?;
     println!("kernel bandwidth={}", diagnostics.bandwidth);
     Ok(())

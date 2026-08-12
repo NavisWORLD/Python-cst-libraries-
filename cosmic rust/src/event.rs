@@ -48,7 +48,10 @@ impl EventBus {
     where
         F: Fn(&Event) + Send + Sync + 'static,
     {
-        self.exact.entry(kind.into()).or_default().push(Arc::new(handler));
+        self.exact
+            .entry(kind.into())
+            .or_default()
+            .push(Arc::new(handler));
     }
 
     pub fn subscribe_all<F>(&mut self, handler: F)

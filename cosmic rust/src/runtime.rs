@@ -54,8 +54,7 @@ impl<M: ModelAdapter> CosmicRuntime<M> {
                 .join(" | "),
         );
         self.events.emit(
-            &Event::new("cosmic-rust", "runtime.before_generate")
-                .with_payload("message", message),
+            &Event::new("cosmic-rust", "runtime.before_generate").with_payload("message", message),
         );
         let response = self.model.generate(message, &context)?;
         self.memory.store(message)?;
