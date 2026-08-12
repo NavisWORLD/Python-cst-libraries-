@@ -1,0 +1,14 @@
+cff-version: 1.2.0
+message: "If you use the CST Libraries, cite the software and the associated CST research record."
+title: "CST Libraries"
+type: software
+authors:
+  - family-names: Davis
+    given-names: Cory Shane
+version: 0.1.0
+date-released: 2026-08-12
+repository-code: "https://github.com/NavisWORLD/Python-cst-libraries-"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.17574447"
+    description: "12-Dimensional Cosmic Synapse Theory research record"
