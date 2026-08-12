@@ -1,0 +1,19 @@
+[package]
+name = "cosmic-rust"
+version = "0.1.0"
+edition = "2021"
+authors = ["Cory Shane Davis"]
+description = "Rust implementation layer for CST/COSMOS persistent-state computation"
+license = "Apache-2.0"
+repository = "https://github.com/NavisWORLD/Python-cst-libraries-"
+keywords = ["cst", "cosmos", "state", "hebbian", "memory"]
+categories = ["algorithms", "science"]
+
+[lib]
+name = "cosmic_rust"
+path = "src/lib.rs"
+
+[features]
+default = []
+
+[dependencies]

@@ -9,6 +9,8 @@ dist/
 *.egg-info/
 .cst/
 .cst-demo/
+.cosmic-rust-demo/
+target/
 CMakeFiles/
 CMakeCache.txt
 cmake_install.cmake

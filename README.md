@@ -1,6 +1,6 @@
 # CST Libraries 0.2
 
-CST Libraries is an open, modular Python/C++ SDK for persistent-state computation, semantic memory, Hebbian association, state affinity, Mixture-of-States attention, event/CNS routing, sensory summaries, provenance, entropy adapters, and CST-L.
+CST Libraries is an open, modular Python/C++/Rust SDK for persistent-state computation, semantic memory, Hebbian association, state affinity, Mixture-of-States attention, event/CNS routing, sensory summaries, provenance, entropy adapters, and CST-L.
 
 The dependency-free Python core remains the portability baseline. Optional integrations are adapters, not hard requirements.
 
@@ -60,6 +60,7 @@ Built-in adapter contracts cover:
 - CNS/event routing: replaceable organ handlers and deferred named slots
 - optional PyTorch Mixture-of-States attention
 - optional C++/pybind11 low-level core
+- dependency-free Rust implementation layer in `cosmic rust/`
 
 ## CST-L 0.2
 
@@ -99,6 +100,21 @@ ctest --test-dir build --output-on-failure
 
 The native library exposes dependency-free state, Gaussian affinity, events/event bus, Hebbian association, simple durable memory, and Lorenz dynamics. Optional pybind11 bindings expose the low-level primitives to Python.
 
+## Cosmic Rust
+
+A new Rust implementation lives in the folder **`cosmic rust/`**.
+
+```bash
+cd "cosmic rust"
+cargo build
+cargo test
+cargo run --example quickstart
+```
+
+The `cosmic-rust` crate mirrors CST's reusable state, synapse, memory, Hebbian, dynamics, event, preflight, adapter-trait, and runtime concepts using idiomatic Rust and no third-party dependencies.
+
+See [`cosmic rust/README.md`](cosmic%20rust/README.md) and [`cosmic rust/MANUAL.md`](cosmic%20rust/MANUAL.md).
+
 ## Documentation
 
 - `docs/INSTALLATION.md` — Python/C++/native install matrix
@@ -110,6 +126,7 @@ The native library exposes dependency-free state, Gaussian affinity, events/even
 - `docs/TEACHERS_GUIDE.md` — teachable course/labs
 - `docs/MIGRATION_0_2.md` — 0.1 to 0.2 compatibility notes
 - `docs/SECURITY_PRIVACY.md` — credentials, raw-media, provenance boundaries
+- `cosmic rust/MANUAL.md` — Rust architecture, APIs, testing, and interoperability
 
 ## Scientific boundary
 
