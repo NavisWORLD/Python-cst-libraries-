@@ -5,11 +5,11 @@ on:
   pull_request:
 
 jobs:
-  python:
+  python-core:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.10", "3.12"]
+        python-version: ["3.10", "3.12", "3.13"]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -19,7 +19,21 @@ jobs:
       - run: pip install -e ".[dev]"
       - run: python -m pytest
       - run: cst doctor
+      - run: cst inspect examples/hello.cst
       - run: cst run examples/hello.cst --message "CI hello"
+      - run: python -m build
+
+  python-torch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -U pip
+      - run: pip install -e ".[dev,torch]"
+      - run: python -m pytest
+      - run: python examples/transformer_demo.py
 
   cpp:
     runs-on: ubuntu-latest
@@ -29,3 +43,15 @@ jobs:
       - run: cmake --build build -j2
       - run: ctest --test-dir build --output-on-failure
       - run: ./build/cpp/cst_cpp_demo
+
+  native-binding:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -U pip pybind11
+      - run: cmake -S . -B build-native -DCST_BUILD_TESTS=OFF -DCST_BUILD_PYTHON_BINDINGS=ON -Dpybind11_DIR="$(python -m pybind11 --cmakedir)"
+      - run: cmake --build build-native -j2
+      - run: PYTHONPATH=build-native/cpp python -c "import _cst_native as n; s=n.DynamicState(12); print(len(s.update([1.0])))"

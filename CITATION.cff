@@ -1,11 +1,11 @@
 cff-version: 1.2.0
-message: "If you use the CST Libraries, cite the software and the associated CST research record."
+message: "If you use CST Libraries, cite the software and the associated CST research record."
 title: "CST Libraries"
 type: software
 authors:
   - family-names: Davis
     given-names: Cory Shane
-version: 0.1.0
+version: 0.2.0
 date-released: 2026-08-12
 repository-code: "https://github.com/NavisWORLD/Python-cst-libraries-"
 identifiers:

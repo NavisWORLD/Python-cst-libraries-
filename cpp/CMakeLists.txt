@@ -1,8 +1,13 @@
 add_library(cst_core STATIC
     src/state.cpp
     src/synapse.cpp
+    src/event.cpp
+    src/event_bus.cpp
+    src/dynamics.cpp
+    src/hebbian.cpp
+    src/memory.cpp
 )
-
+set_target_properties(cst_core PROPERTIES POSITION_INDEPENDENT_CODE ON)
 target_compile_features(cst_core PUBLIC cxx_std_17)
 target_include_directories(cst_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 

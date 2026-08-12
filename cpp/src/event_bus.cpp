@@ -1,0 +1,2 @@
+#include "cst/event_bus.hpp"
+namespace cst {void EventBus::subscribe(const std::string&kind,Handler h){handlers_[kind].push_back(std::move(h));}std::size_t EventBus::emit(const Event&e) noexcept{std::size_t failures=0;auto deliver=[&](const std::string&k){auto it=handlers_.find(k);if(it==handlers_.end())return;for(auto&h:it->second){try{h(e);++deliveries_;}catch(...){++errors_;++failures;}}};deliver(e.kind);deliver("*");return failures;}}

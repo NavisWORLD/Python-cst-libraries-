@@ -1,129 +1,95 @@
-# CST Libraries
+# CST Libraries 0.2
 
-**CST Libraries** is an open, modular SDK for the computational mechanisms developed in the COSMOS / Davis Cosmic Synapse Theory project lineage: persistent dynamic state, state affinity ("synapses"), durable semantic memory, Hebbian association, nonlinear dynamics, fail-soft background maintenance, experiment preflight checks, and the starter **CST-L** domain-specific language.
+CST Libraries is an open, modular Python/C++ SDK for persistent-state computation, semantic memory, Hebbian association, state affinity, Mixture-of-States attention, event/CNS routing, sensory summaries, provenance, entropy adapters, and CST-L.
 
-This repository intentionally separates engineering mechanisms from metaphor. It does **not** claim that software state is literal biology, that CST is established physical law, that quantum randomness makes models smarter, or that persistence establishes consciousness.
+The dependency-free Python core remains the portability baseline. Optional integrations are adapters, not hard requirements.
 
-## What you can build
-
-- stateful AI and agent experiments
-- semantic memory systems
-- persistent local assistants
-- adaptive games and simulations
-- reactive music or sensor applications
-- dynamic-state neural research prototypes
-- reproducible mechanism tests
-- CST-L programs that orchestrate state + memory + association
-
-## Python install
-
-Requires Python 3.10+.
+## Install
 
 ```bash
 python -m venv .venv
-# Linux/macOS
-source .venv/bin/activate
-# Windows PowerShell
-# .venv\Scripts\Activate.ps1
-
+source .venv/bin/activate       # Windows: .venv\\Scripts\\Activate.ps1
 python -m pip install -U pip
 pip install -e .
+cst doctor
 ```
 
-Development tools:
+Optional components:
 
 ```bash
 pip install -e ".[dev]"
-python -m pytest
+pip install -e ".[torch]"      # Mixture-of-States transformer components
+pip install -e ".[native]"     # pybind11 build dependency
+pip install -e ".[ibm]"        # convenience IBM Quantum SDK dependencies
+pip install -e ".[azure]"      # convenience Azure Quantum SDK dependency
 ```
 
-The Python core has **zero runtime dependencies**. You can plug in NumPy, PyTorch, sentence-transformers, FAISS, Qiskit, audio libraries, or your own model adapter without making them mandatory for everyone else.
+## First project
 
-## Five-minute Python example
-
-```python
-from cstlib import Dyn12, GaussianSynapse, HebbianMemory, SemanticMemory
-
-state = Dyn12()
-memory = SemanticMemory(".cst/memory.jsonl")
-hebb = HebbianMemory(".cst/links.json")
-
-history = []
-for message in [
-    "music follows rhythm",
-    "rhythm follows motion",
-    "memory follows meaning",
-]:
-    history.append(state.update(message))
-    memory.store(message)
-    hebb.learn(message)
-
-kernel = GaussianSynapse("median")
-print(kernel.affinity(history))
-print(memory.recall("music and rhythm"))
-print(hebb.associated_with("rhythm"))
+```bash
+cst init my-cst-project
+cst run my-cst-project/main.cst --message "hello CST"
 ```
 
-## Reference runtime
+## Python runtime
 
 ```python
 from cstlib import Runtime
+from cstlib.adapters import OllamaChatAdapter
 
-cosmos = Runtime.local(".cst")
-print(cosmos.respond("hello persistent world"))
+runtime = Runtime.local(
+    ".cst",
+    model=OllamaChatAdapter(model="qwen3")
+)
+print(runtime.respond("Remember that my synth is tuned to A=432 for this experiment."))
 ```
 
-`Runtime` deliberately accepts a normal Python callable as its model adapter, so the core library is not locked to one LLM provider.
+## Adapter families
 
-## CST-L: the computational language layer
+```bash
+cst adapters
+```
 
-Create `hello.cst`:
+Built-in adapter contracts cover:
+
+- model generation: callable, generic JSON HTTP, Ollama chat
+- embeddings: hashed fallback, callable, Ollama embed
+- sensory: application-owned audio reader, numeric luma/motion reader
+- entropy: OS CSPRNG, archived measurement derivation, callback source
+- quantum result provenance: IBM counts, Azure result mappings
+- CNS/event routing: replaceable organ handlers and deferred named slots
+- optional PyTorch Mixture-of-States attention
+- optional C++/pybind11 low-level core
+
+## CST-L 0.2
+
+CST-L remains intentionally small and auditable. It can declare persistent state/memory and host-bound external adapters without embedding credentials in source.
 
 ```cst
 state mind dyn12 decay=0.92
 memory life path=.cst/memory.jsonl
 hebbian links path=.cst/links.json
+model band external
+sensor mic external
+entropy provenance external
 
 loop message
   recall life as remembered
+  observe mic as audio
+  sample provenance as entropy bytes=16
   evolve mind
-  associate links
-  store life
-  emit "INPUT={message}"
-  emit "STATE={state.mind}"
-  emit "RECALLED={remembered}"
+  generate band as answer
+  store life from=answer
+  associate links from=answer
+  snapshot mind as now
+  emit "{answer}"
+  emit "state={now}"
 end
 ```
 
-Run once:
+External declarations are bindings supplied by the host application; CST-L does not execute arbitrary Python.
 
-```bash
-cst run hello.cst --message "hello from CST-L"
-```
-
-Or interactively:
-
-```bash
-cst run hello.cst
-```
-
-Health check:
-
-```bash
-cst doctor
-```
-
-Reference demo:
-
-```bash
-cst demo
-```
-
-See [`docs/LANGUAGE_SPEC.md`](docs/LANGUAGE_SPEC.md) for the current 0.1 grammar and execution model.
-
-## C++ core
-
-The C++17 core implements the low-level dynamic-state and Gaussian-affinity primitives with no third-party runtime dependencies.
+## C++17
 
 ```bash
 cmake -S . -B build -DCST_BUILD_TESTS=ON
@@ -131,89 +97,24 @@ cmake --build build
 ctest --test-dir build --output-on-failure
 ```
 
-Run the demo:
+The native library exposes dependency-free state, Gaussian affinity, events/event bus, Hebbian association, simple durable memory, and Lorenz dynamics. Optional pybind11 bindings expose the low-level primitives to Python.
 
-```bash
-./build/cpp/cst_cpp_demo
-```
+## Documentation
 
-On multi-config generators such as Visual Studio, the executable may be under `build/cpp/Debug/` or `build/cpp/Release/`.
+- `docs/INSTALLATION.md` — Python/C++/native install matrix
+- `docs/DEVELOPER_GUIDE.md` — architecture and extension contracts
+- `docs/ADAPTER_GUIDE.md` — model, embedding, sensory, quantum, CNS adapters
+- `docs/LANGUAGE_SPEC.md` — CST-L 0.2 grammar and host bindings
+- `docs/TRANSFORMER_GUIDE.md` — Mixture-of-States attention
+- `docs/QUANTUM_PROVENANCE.md` — provider-result discipline
+- `docs/TEACHERS_GUIDE.md` — teachable course/labs
+- `docs/MIGRATION_0_2.md` — 0.1 to 0.2 compatibility notes
+- `docs/SECURITY_PRIVACY.md` — credentials, raw-media, provenance boundaries
 
-### Optional Python/C++ bindings
+## Scientific boundary
 
-If `pybind11` is installed, the repository can also build the optional `_cst_native` extension:
+CST Libraries distinguishes **implemented**, **observed**, **measured**, **null**, **hypothesis**, and **model/metaphor**. Persistent software state is not evidence of consciousness. Quantum provenance is not quantum advantage. Simulation variables are not automatically physical law.
 
-```bash
-pip install pybind11
-cmake -S . -B build-native \
-  -DCST_BUILD_PYTHON_BINDINGS=ON \
-  -Dpybind11_DIR="$(python -m pybind11 --cmakedir)"
-cmake --build build-native
-```
+## License
 
-The native module is intentionally optional. The Python reference implementation remains the portability baseline.
-
-## Package map
-
-| Module | Purpose |
-|---|---|
-| `cstlib.state` | `DynamicState`, `Dyn12`, `Dyn42`, `Dyn54` |
-| `cstlib.synapse` | Gaussian state-affinity kernel + diagnostics |
-| `cstlib.memory` | durable JSONL memory + semantic retrieval |
-| `cstlib.hebbian` | persistent concept-association weights |
-| `cstlib.dynamics` | deterministic nonlinear systems (Lorenz) |
-| `cstlib.heartbeat` | fail-soft recurring maintenance tasks |
-| `cstlib.proof` | preflight checks for experimental mechanisms |
-| `cstlib.runtime` | composable reference runtime |
-| `cstlib.lang` | CST-L parser and interpreter |
-| `cpp/` | C++17 state/synapse core and optional pybind11 bindings |
-
-## Core computational pattern
-
-```text
-observe
-  -> remember
-  -> evolve state
-  -> calculate relationships
-  -> choose/act
-  -> learn associations
-  -> persist
-  -> repeat
-```
-
-The practical idea is not that every ingredient is novel. It is that state, retrieval, association, background maintenance, and mechanism validation are made explicit and reusable rather than hidden inside one monolithic application.
-
-## Scientific / engineering discipline
-
-Use these labels when documenting results:
-
-- **IMPLEMENTED** — a code path exists.
-- **OBSERVED** — the component executed in a captured run.
-- **MEASURED** — a defined metric was produced.
-- **NULL** — the tested success criterion was not met.
-- **HYPOTHESIS** — a falsifiable proposition to test.
-- **MODEL / METAPHOR** — a conceptual design lens, not automatically a literal physical or biological statement.
-
-Before accepting a state-kernel benchmark, use `cstlib.proof.check_preflight` to test that the driving signal and state vary, the kernel is neither identity-like nor uniform-like, and the learned gate receives non-zero gradient.
-
-## Teaching
-
-[`docs/TEACHERS_GUIDE.md`](docs/TEACHERS_GUIDE.md) provides a 12-lesson course using the actual SDK: persistent state, dyn12, Gaussian affinity, memory, Hebbian learning, Lorenz dynamics, heartbeat tasks, preflight science, and a CST-L final project.
-
-## Reuse and upstream libraries
-
-This repository's original source is licensed under Apache-2.0. Third-party libraries are **not** relicensed by this repository. If you add PyTorch, NumPy, Qiskit, FAISS, model weights, datasets, or copied/modified upstream code, preserve their original licenses and attribution.
-
-Do not claim authorship of upstream libraries. Document the exact upstream version, what CST changes or wraps, and what evidence supports any performance claim.
-
-## Research lineage
-
-Associated CST research record: DOI `10.5281/zenodo.17574447`.
-
-The broader COSMOS project includes additional transformer, sensory, memory, quantum-provenance, and runtime research. This repository is deliberately the **reusable library layer**, so builders can use individual mechanisms without needing the complete COSMOS application.
-
-## Status
-
-**0.1.0 — working reference SDK / alpha API.**
-
-The Python package, CLI, CST-L interpreter, C++ core, examples, and tests are intended to run now. The API is still young and should evolve through versioned releases rather than silent breaking changes.
+Original repository code is Apache-2.0. Third-party SDKs, models, weights, and datasets retain their own licenses.

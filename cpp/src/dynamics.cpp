@@ -1,0 +1,3 @@
+#include "cst/dynamics.hpp"
+#include <stdexcept>
+namespace cst {Lorenz::Lorenz(double s,double r,double b,double x,double y,double z):sigma_(s),rho_(r),beta_(b),x_(x),y_(y),z_(z){}std::array<double,3>Lorenz::f(double x,double y,double z)const{return{sigma_*(y-x),x*(rho_-z)-y,x*y-beta_*z};}std::array<double,3>Lorenz::step(double dt){if(dt<=0)throw std::invalid_argument("dt must be positive");auto k1=f(x_,y_,z_);auto k2=f(x_+dt*k1[0]/2,y_+dt*k1[1]/2,z_+dt*k1[2]/2);auto k3=f(x_+dt*k2[0]/2,y_+dt*k2[1]/2,z_+dt*k2[2]/2);auto k4=f(x_+dt*k3[0],y_+dt*k3[1],z_+dt*k3[2]);x_+=dt*(k1[0]+2*k2[0]+2*k3[0]+k4[0])/6;y_+=dt*(k1[1]+2*k2[1]+2*k3[1]+k4[1])/6;z_+=dt*(k1[2]+2*k2[2]+2*k3[2]+k4[2])/6;return state();}}

@@ -1,0 +1,19 @@
+state mind dyn12 decay=0.92
+memory life path=.cst-external/memory.jsonl
+hebbian links path=.cst-external/links.json
+model local external
+sensor mic external
+entropy q external
+
+loop message
+  recall life as remembered
+  observe mic as audio
+  sample q as provenance bytes=16
+  evolve mind
+  generate local as answer
+  store life from=answer
+  associate links from=answer
+  snapshot mind as now
+  emit "{answer}"
+  emit "state={now}"
+end

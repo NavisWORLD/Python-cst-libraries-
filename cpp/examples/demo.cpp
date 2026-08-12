@@ -1,19 +1,17 @@
-#include <iostream>
-#include <vector>
-
 #include "cst/state.hpp"
 #include "cst/synapse.hpp"
-
-int main() {
-    cst::Dyn12 state;
-    std::vector<std::vector<double>> history;
-    for (int i = 0; i < 4; ++i) {
-        history.push_back(state.update({0.1 * i, 0.2 * i, -0.1 * i}));
-    }
-    cst::GaussianSynapse kernel;
-    const auto matrix = kernel.affinity(history);
-    std::cout << "CST C++ demo\n";
-    std::cout << "dimension=" << state.dimension() << " updates=" << state.updates() << "\n";
-    std::cout << "bandwidth=" << kernel.bandwidth() << " H[0][1]=" << matrix[0][1] << "\n";
+#include "cst/dynamics.hpp"
+#include "cst/hebbian.hpp"
+#include "cst/memory.hpp"
+#include "cst/event_bus.hpp"
+#include <iostream>
+int main(){
+    cst::Dyn12 state;auto a=state.update({1.0,0.5,-0.25});auto b=state.update({0.25,-0.5,1.0});
+    cst::GaussianSynapse syn;auto h=syn.affinity({a,b});
+    cst::Lorenz lorenz;auto xyz=lorenz.step();
+    cst::HebbianMemory hebb;hebb.learn({"music","rhythm","motion"});
+    cst::TextMemory memory;memory.store("the red guitar lives in the studio",1.0);auto recalled=memory.recall("guitar studio",1);
+    cst::EventBus bus;bus.subscribe("demo",[](const cst::Event&e){std::cout<<"event="<<e.kind<<"\n";});bus.emit(cst::Event("demo","demo",{{"status","ok"}}));
+    std::cout<<"dyn12_updates="<<state.updates()<<" affinity="<<h[0][1]<<" lorenz_z="<<xyz[2]<<" recall="<<recalled[0].first.text<<"\n";
     return 0;
 }

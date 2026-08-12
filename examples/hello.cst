@@ -1,4 +1,3 @@
-# CST-L 0.1 example
 state mind dyn12 decay=0.92
 memory life path=.cst/memory.jsonl
 hebbian links path=.cst/links.json
@@ -8,7 +7,8 @@ loop message
   evolve mind
   associate links
   store life
+  snapshot mind as current
   emit "INPUT={message}"
-  emit "STATE={state.mind}"
   emit "RECALLED={remembered}"
+  emit "STATE={current}"
 end

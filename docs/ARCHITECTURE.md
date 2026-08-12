@@ -1,22 +1,53 @@
-# Architecture
+# CST Libraries 0.2 Architecture
 
-The SDK is intentionally layered.
+## Layers
 
 ```text
-input
-  -> DynamicState (persistent control state)
-  -> GaussianSynapse (state relationships)
-  -> SemanticMemory (durable meaning-based recall)
-  -> HebbianMemory (slow concept association)
-  -> Runtime (composition and model adapter)
-  -> Heartbeat (background maintenance)
-  -> Proof (mechanism preflight)
+APPLICATION / CST-L HOST
+        |
+        +-- model adapters
+        +-- embedding adapters
+        +-- sensory adapters
+        +-- entropy/provenance adapters
+        |
+CST RUNTIME
+        |
+        +-- EventBus
+        +-- CNS organ controller
+        +-- Heartbeat
+        |
+COMPUTATIONAL PRIMITIVES
+        |
+        +-- DynamicState (dyn12/42/54)
+        +-- GaussianSynapse
+        +-- SemanticMemory
+        +-- HebbianMemory
+        +-- Lorenz dynamics
+        +-- provenance manifests
+        |
+OPTIONAL ACCELERATION / RESEARCH
+        |
+        +-- PyTorch Mixture-of-States attention
+        +-- C++17 core
+        +-- pybind11 extension
 ```
 
-The C++ core currently implements the lowest-level state and Gaussian affinity mechanisms. Python provides the reference runtime, persistence, scheduler, testing utilities and CST-L interpreter.
+## Dependency rule
 
-## Evidence boundaries
+The arrows point inward: heavy/provider-specific systems depend on CST contracts; CST core does not import provider SDKs.
 
-Names such as `CST`, `COSMOS`, `heartbeat`, `synapse`, or `organ` are software vocabulary. They do not imply literal biology, consciousness, new physics, or quantum performance advantage.
+## Timescales
 
-The core engineering principle is to keep every mechanism inspectable and replace broad claims with tests.
+CST separates multiple timescales: per-observation numeric features, per-token/per-event dynamic state, per-turn memory and association, cross-session persistence, scheduled heartbeat maintenance, and experiment/archive provenance.
+
+## Data ownership
+
+Adapters receive buffers or provider results from the host application. The host owns credentials, device permissions, and raw-media retention policy.
+
+## Standard CNS slots
+
+The seven historical names are retained as configurable slots. `CNS.standard()` makes unbound slots `DeferredOrgan` instances so a health report can say "not configured" instead of pretending a subsystem is active.
+
+## Native boundary
+
+The C++ layer implements computation-heavy, provider-independent primitives. Networking, cloud authentication, and device capture stay in Python/application adapters.
