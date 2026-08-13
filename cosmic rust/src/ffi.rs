@@ -22,12 +22,7 @@ pub extern "C" fn cst_rust_synaptic_affinity(
     if len == 0 || sigma <= 0.0 {
         return 2;
     }
-    let (a, b) = unsafe {
-        (
-            slice::from_raw_parts(a, len),
-            slice::from_raw_parts(b, len),
-        )
-    };
+    let (a, b) = unsafe { (slice::from_raw_parts(a, len), slice::from_raw_parts(b, len)) };
     match SynapticFunction::new(sigma, 0.5).and_then(|f| f.affinity(a, b)) {
         Ok(value) => {
             unsafe { *out = value };
