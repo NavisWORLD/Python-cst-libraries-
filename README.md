@@ -1,10 +1,22 @@
-# CST Libraries 0.2
+# CST Libraries 0.3
 
-CST Libraries is an open, modular Python/C++/Rust SDK for persistent-state computation, semantic memory, Hebbian association, state affinity, Mixture-of-States attention, event/CNS routing, sensory summaries, provenance, entropy adapters, and CST-L.
+CST Libraries is an open, modular Python/C++/Rust SDK for persistent-state computation, semantic memory, Hebbian association, state affinity, Mixture-of-States attention, event/CNS routing, sensory summaries, provenance, entropy adapters, CST-L, and packaged CST Studio applications.
 
 The dependency-free Python core remains the portability baseline. Optional integrations are adapters, not hard requirements.
 
-## Install
+## Download the apps
+
+The **v0.3.0 Packaged Apps** release workflow produces:
+
+- ✅ `CST-Libraries-Windows-Setup.exe` — one-click Windows installer
+- ✅ `CST-Libraries-macOS.dmg` + zipped `.app` — macOS application bundle
+- ✅ `CST-Cosmic-Mobile-Android.apk` — installable Android application
+- ✅ iOS application source + Simulator app + unsigned iPhoneOS IPA for Apple signing
+- ✅ Python wheel/source distribution bundled into the GitHub Release
+
+Apple requires developer signing/provisioning for a physical iPhone and notarization credentials for warning-free public macOS distribution. The repository automates everything up to that credential boundary. See `docs/INSTALLERS_AND_APPS.md`.
+
+## Install the developer SDK
 
 ```bash
 python -m venv .venv
@@ -62,7 +74,7 @@ Built-in adapter contracts cover:
 - optional C++/pybind11 low-level core
 - dependency-free Rust implementation layer in `cosmic rust/`
 
-## CST-L 0.2
+## CST-L 0.2 language layer
 
 CST-L remains intentionally small and auditable. It can declare persistent state/memory and host-bound external adapters without embedding credentials in source.
 
@@ -102,7 +114,7 @@ The native library exposes dependency-free state, Gaussian affinity, events/even
 
 ## Cosmic Rust
 
-A new Rust implementation lives in the folder **`cosmic rust/`**.
+A Rust implementation lives in **`cosmic rust/`**.
 
 ```bash
 cd "cosmic rust"
@@ -113,18 +125,23 @@ cargo run --example quickstart
 
 The `cosmic-rust` crate mirrors CST's reusable state, synapse, memory, Hebbian, dynamics, event, preflight, adapter-trait, and runtime concepts using idiomatic Rust and no third-party dependencies.
 
-See [`cosmic rust/README.md`](cosmic%20rust/README.md) and [`cosmic rust/MANUAL.md`](cosmic%20rust/MANUAL.md).
+## Application source
+
+- `apps/desktop/` — CST Studio desktop application used by Windows/macOS packaging
+- `apps/mobile/` — Capacitor mobile application used by Android/iOS packaging
+- `packaging/` — installer scripts and packaged-release notes
+- `.github/workflows/release.yml` — multi-platform binary build + GitHub Release automation
 
 ## Documentation
 
 - `docs/INSTALLATION.md` — Python/C++/native install matrix
+- `docs/INSTALLERS_AND_APPS.md` — Windows, macOS, Android, iOS and release guide
 - `docs/DEVELOPER_GUIDE.md` — architecture and extension contracts
 - `docs/ADAPTER_GUIDE.md` — model, embedding, sensory, quantum, CNS adapters
-- `docs/LANGUAGE_SPEC.md` — CST-L 0.2 grammar and host bindings
+- `docs/LANGUAGE_SPEC.md` — CST-L grammar and host bindings
 - `docs/TRANSFORMER_GUIDE.md` — Mixture-of-States attention
 - `docs/QUANTUM_PROVENANCE.md` — provider-result discipline
 - `docs/TEACHERS_GUIDE.md` — teachable course/labs
-- `docs/MIGRATION_0_2.md` — 0.1 to 0.2 compatibility notes
 - `docs/SECURITY_PRIVACY.md` — credentials, raw-media, provenance boundaries
 - `cosmic rust/MANUAL.md` — Rust architecture, APIs, testing, and interoperability
 

@@ -1,5 +1,5 @@
 """CST/COSMOS reusable computational libraries."""
-__version__="0.2.0"
+__version__="0.3.0"
 from .bus import EventBus
 from .cns import CNS,DeferredOrgan,FunctionOrgan
 from .config import RuntimeConfig

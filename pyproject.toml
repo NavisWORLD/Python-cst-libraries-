@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "cst-libraries"
-version = "0.2.0"
-description = "CST/COSMOS persistent-state computation SDK, adapters, native core, and CST-L runtime"
+version = "0.3.0"
+description = "CST/COSMOS persistent-state computation SDK, adapters, native core, CST-L runtime, and packaged apps"
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "Apache-2.0"}

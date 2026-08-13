@@ -1,0 +1,160 @@
+name: Packaged Apps Release
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "apps/**"
+      - "packaging/**"
+      - "docs/INSTALLERS_AND_APPS.md"
+      - ".github/workflows/release.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: cst-v0.3.0-release
+  cancel-in-progress: false
+
+env:
+  RELEASE_TAG: v0.3.0
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -U pip pyinstaller
+      - run: pip install -e .
+      - run: pyinstaller --noconfirm --clean --windowed --name "CST Studio" --collect-submodules cstlib apps/desktop/cst_studio.py
+      - name: Build NSIS installer
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force release | Out-Null
+          choco install nsis -y --no-progress
+          & "C:\Program Files (x86)\NSIS\makensis.exe" packaging\windows\CSTStudio.nsi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-installer
+          path: release/CST-Libraries-Windows-Setup.exe
+
+  macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -U pip pyinstaller
+      - run: pip install -e .
+      - run: pyinstaller --noconfirm --clean --windowed --name "CST Studio" --collect-submodules cstlib apps/desktop/cst_studio.py
+      - name: Package app and DMG
+        run: |
+          mkdir -p release
+          codesign --force --deep --sign - "dist/CST Studio.app"
+          ditto -c -k --sequesterRsrc --keepParent "dist/CST Studio.app" "release/CST-Libraries-macOS.app.zip"
+          hdiutil create -volname "CST Studio" -srcfolder "dist/CST Studio.app" -ov -format UDZO "release/CST-Libraries-macOS.dmg"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: macos-app
+          path: |
+            release/CST-Libraries-macOS.app.zip
+            release/CST-Libraries-macOS.dmg
+
+  android:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/mobile
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - run: npm install --no-audit --no-fund
+      - run: npx cap add android
+      - run: npx cap sync android
+      - run: chmod +x android/gradlew
+      - run: ./android/gradlew -p android assembleDebug
+      - name: Stage APK
+        run: |
+          mkdir -p release
+          cp android/app/build/outputs/apk/debug/app-debug.apk release/CST-Cosmic-Mobile-Android.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android-apk
+          path: apps/mobile/release/CST-Cosmic-Mobile-Android.apk
+
+  ios:
+    runs-on: macos-latest
+    defaults:
+      run:
+        working-directory: apps/mobile
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: npm install --no-audit --no-fund
+      - run: npx cap add ios
+      - run: npx cap sync ios
+      - name: Build iOS Simulator app
+        run: |
+          xcodebuild -project ios/App/App.xcodeproj -scheme App -configuration Release -sdk iphonesimulator -derivedDataPath "$PWD/ios-sim" CODE_SIGNING_ALLOWED=NO
+          mkdir -p release
+          ditto -c -k --sequesterRsrc --keepParent "ios-sim/Build/Products/Release-iphonesimulator/App.app" "release/CST-Cosmic-Mobile-iOS-Simulator.app.zip"
+      - name: Build unsigned iPhoneOS package
+        run: |
+          xcodebuild -project ios/App/App.xcodeproj -scheme App -configuration Release -sdk iphoneos -derivedDataPath "$PWD/ios-device" CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO
+          mkdir -p release/Payload
+          cp -R "ios-device/Build/Products/Release-iphoneos/App.app" release/Payload/
+          (cd release && zip -qry CST-Cosmic-Mobile-iOS-UNSIGNED.ipa Payload)
+          rm -rf release/Payload
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ios-app
+          path: |
+            apps/mobile/release/CST-Cosmic-Mobile-iOS-Simulator.app.zip
+            apps/mobile/release/CST-Cosmic-Mobile-iOS-UNSIGNED.ipa
+
+  python-package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -U pip build
+      - run: python -m build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: python-package
+          path: dist/*
+
+  publish:
+    needs: [windows, macos, android, ios, python-package]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: release-assets
+          merge-multiple: true
+      - name: Create or update GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ls -lah release-assets
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            gh release upload "$RELEASE_TAG" release-assets/* --clobber
+          else
+            gh release create "$RELEASE_TAG" release-assets/* --target "$GITHUB_SHA" --title "CST Libraries v0.3.0 — Packaged Apps" --notes-file packaging/RELEASE_NOTES.md
+          fi
