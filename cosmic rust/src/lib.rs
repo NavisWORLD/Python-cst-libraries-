@@ -1,4 +1,5 @@
 //! Cosmic Rust: a dependency-free Rust implementation layer for the CST/COSMOS SDK.
+
 pub mod adapters;
 pub mod dynamics;
 pub mod event;
@@ -10,13 +11,14 @@ pub mod runtime;
 pub mod state;
 pub mod synapse;
 pub mod synaptic;
-pub use adapters::{EntropySource,ModelAdapter,SensorAdapter};
+
+pub use adapters::{EntropySource, ModelAdapter, SensorAdapter};
 pub use dynamics::Lorenz;
-pub use event::{Event,EventBus};
+pub use event::{Event, EventBus};
 pub use hebbian::HebbianMemory;
-pub use memory::{MemoryRecord,SemanticMemory};
-pub use preflight::{check_preflight,PreflightReport};
+pub use memory::{MemoryRecord, SemanticMemory};
+pub use preflight::{check_preflight, PreflightReport};
 pub use runtime::CosmicRuntime;
-pub use state::{Dyn12,Dyn42,Dyn54,DynamicState};
-pub use synapse::{GaussianSynapse,KernelDiagnostics};
-pub use synaptic::{gated_blend,gaussian_affinity,state_step,SynapticFunction};
+pub use state::{Dyn12, Dyn42, Dyn54, DynamicState};
+pub use synapse::{GaussianSynapse, KernelDiagnostics};
+pub use synaptic::{gated_blend, gaussian_affinity, state_step, SynapticFunction};
