@@ -1,6 +1,6 @@
 # CST Libraries 0.3
 
-CST Libraries is an open, modular Python/C++/Rust SDK for persistent-state computation, semantic memory, Hebbian association, state affinity, Mixture-of-States attention, event/CNS routing, sensory summaries, provenance, entropy adapters, CST-L, and packaged CST Studio applications.
+CST Libraries is an open, modular Python/C++/Rust SDK for persistent-state computation, semantic memory, Hebbian association, state affinity, Mixture-of-States attention, event/CNS routing, sensory summaries, provenance, entropy adapters, CST-L, packaged CST Studio applications, and cross-language synaptic computation.
 
 The dependency-free Python core remains the portability baseline. Optional integrations are adapters, not hard requirements.
 
@@ -42,6 +42,27 @@ pip install -e ".[azure]"      # convenience Azure Quantum SDK dependency
 cst init my-cst-project
 cst run my-cst-project/main.cst --message "hello CST"
 ```
+
+## CST-SYNAPTIC-V1 cross-language core
+
+The same synaptic numerical contract is now available across the major application language families:
+
+- Python — `src/cstlib/synaptic.py`
+- C — stable ABI in `cpp/include/cst/c_api.h`
+- C++17 — `cst::SynapticFunction`
+- Rust — `cosmic_rust::SynapticFunction` plus `rlib`, `cdylib`, and `staticlib` outputs
+- JavaScript + TypeScript — `bindings/javascript/`
+- Go — `bindings/go/`
+- Java/JVM — `bindings/java/`
+- Kotlin — `bindings/kotlin/` and direct access to the Java/JVM API
+- C#/.NET — `bindings/csharp/`
+- Swift — `bindings/swift/`
+
+The contract includes Gaussian synaptic affinity, gated blending, and the persistent leaky state update. Every port shares the numerical reference vectors in `protocol/conformance.json`.
+
+For languages without a dedicated implementation, use either the plain C ABI or the JSON-lines process bridge in `tools/synaptic_bridge.py`. This provides a stable integration route for essentially any FFI- or stdio-capable language without claiming that every programming language is separately hand-maintained.
+
+See `docs/SYNAPTIC_CROSS_LANGUAGE.md`, `bindings/README.md`, and `protocol/README.md`.
 
 ## Python runtime
 
@@ -110,7 +131,7 @@ cmake --build build
 ctest --test-dir build --output-on-failure
 ```
 
-The native library exposes dependency-free state, Gaussian affinity, events/event bus, Hebbian association, simple durable memory, and Lorenz dynamics. Optional pybind11 bindings expose the low-level primitives to Python.
+The native library exposes dependency-free state, Gaussian affinity, events/event bus, Hebbian association, simple durable memory, Lorenz dynamics, `SynapticFunction`, and the portable C ABI. Optional pybind11 bindings expose the low-level primitives to Python.
 
 ## Cosmic Rust
 
@@ -123,7 +144,7 @@ cargo test
 cargo run --example quickstart
 ```
 
-The `cosmic-rust` crate mirrors CST's reusable state, synapse, memory, Hebbian, dynamics, event, preflight, adapter-trait, and runtime concepts using idiomatic Rust and no third-party dependencies.
+The `cosmic-rust` crate mirrors CST's reusable state, synapse, memory, Hebbian, dynamics, event, preflight, adapter-trait, runtime, and portable synaptic concepts using idiomatic Rust and no third-party runtime dependencies.
 
 ## Application source
 
@@ -136,6 +157,9 @@ The `cosmic-rust` crate mirrors CST's reusable state, synapse, memory, Hebbian, 
 
 - `docs/INSTALLATION.md` — Python/C++/native install matrix
 - `docs/INSTALLERS_AND_APPS.md` — Windows, macOS, Android, iOS and release guide
+- `docs/SYNAPTIC_CROSS_LANGUAGE.md` — portable numerical contract, ABI, bridge, and conformance rules
+- `bindings/README.md` — language binding map
+- `protocol/README.md` — language-neutral protocol files
 - `docs/DEVELOPER_GUIDE.md` — architecture and extension contracts
 - `docs/ADAPTER_GUIDE.md` — model, embedding, sensory, quantum, CNS adapters
 - `docs/LANGUAGE_SPEC.md` — CST-L grammar and host bindings
@@ -147,7 +171,7 @@ The `cosmic-rust` crate mirrors CST's reusable state, synapse, memory, Hebbian, 
 
 ## Scientific boundary
 
-CST Libraries distinguishes **implemented**, **observed**, **measured**, **null**, **hypothesis**, and **model/metaphor**. Persistent software state is not evidence of consciousness. Quantum provenance is not quantum advantage. Simulation variables are not automatically physical law.
+CST Libraries distinguishes **implemented**, **observed**, **measured**, **null**, **hypothesis**, and **model/metaphor**. A software synaptic function is a state-similarity/routing mechanism, not evidence of a literal biological synapse. Persistent software state is not evidence of consciousness. Quantum provenance is not quantum advantage. Simulation variables are not automatically physical law.
 
 ## License
 
