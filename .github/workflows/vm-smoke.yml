@@ -1,0 +1,60 @@
+name: Clean VM Smoke
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "src/**"
+      - "cpp/**"
+      - "cosmic rust/**"
+      - "tools/synaptic_bridge.py"
+      - "tools/vm_smoke.py"
+      - "pyproject.toml"
+      - "CMakeLists.txt"
+      - ".github/workflows/vm-smoke.yml"
+
+jobs:
+  vm-smoke:
+    name: ${{ matrix.os }} clean-machine smoke
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Install CST Python SDK
+        run: |
+          python -m pip install -U pip
+          python -m pip install -e ".[dev]"
+
+      - name: Python and CLI smoke
+        run: |
+          python -m pytest
+          cst doctor
+
+      - name: Configure C++ clean build
+        run: cmake -S . -B build-vm -DCST_BUILD_TESTS=ON -DCST_BUILD_PYTHON_BINDINGS=OFF
+
+      - name: Build C++ native library
+        run: cmake --build build-vm --config Release --parallel 2
+
+      - name: Test C++ native library
+        run: ctest --test-dir build-vm -C Release --output-on-failure
+
+      - name: Test Rust crate
+        run: cargo test --manifest-path "cosmic rust/Cargo.toml"
+
+      - name: Build Rust cdylib/staticlib
+        run: cargo build --release --manifest-path "cosmic rust/Cargo.toml"
+
+      - name: Cross-backend native ABI smoke
+        run: python tools/vm_smoke.py
