@@ -53,12 +53,7 @@ impl SynapticFunction {
             .collect()
     }
 
-    pub fn blend(
-        &self,
-        standard: f64,
-        affinity: f64,
-        gate: Option<f64>,
-    ) -> Result<f64, String> {
+    pub fn blend(&self, standard: f64, affinity: f64, gate: Option<f64>) -> Result<f64, String> {
         let g = gate.unwrap_or(self.gate);
         if !(0.0..=1.0).contains(&g) {
             return Err("gate must be in [0,1]".into());
