@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.18)
-project(cst_libraries VERSION 0.2.0 LANGUAGES CXX)
+project(cst_libraries VERSION 0.3.0 LANGUAGES C CXX)
 option(CST_BUILD_TESTS "Build CST C++ tests" ON)
 option(CST_BUILD_PYTHON_BINDINGS "Build optional pybind11 module" OFF)
 enable_testing()

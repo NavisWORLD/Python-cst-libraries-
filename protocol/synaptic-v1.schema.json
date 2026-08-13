@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/NavisWORLD/Python-cst-libraries-/protocol/synaptic-v1.schema.json",
+  "title": "CST Synaptic Function v1 JSON bridge request",
+  "type": "object",
+  "required": ["op"],
+  "properties": {
+    "op": {"enum": ["affinity", "matrix", "blend", "step"]},
+    "a": {"type": "array", "items": {"type": "number"}, "minItems": 1},
+    "b": {"type": "array", "items": {"type": "number"}, "minItems": 1},
+    "states": {"type": "array", "items": {"type": "array", "items": {"type": "number"}, "minItems": 1}, "minItems": 1},
+    "state": {"type": "array", "items": {"type": "number"}, "minItems": 1},
+    "signal": {"type": "array", "items": {"type": "number"}, "minItems": 1},
+    "sigma": {"type": "number", "exclusiveMinimum": 0},
+    "standard": {"type": "number"},
+    "affinity": {"type": "number"},
+    "gate": {"type": "number", "minimum": 0, "maximum": 1},
+    "decay": {"type": "number", "minimum": 0, "maximum": 1},
+    "gain": {"type": "number"},
+    "dt": {"type": "number", "minimum": 0}
+  },
+  "additionalProperties": true
+}

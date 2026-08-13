@@ -1,0 +1,6 @@
+use crate::synaptic::SynapticFunction;
+use std::slice;
+#[no_mangle]pub extern "C" fn cst_rust_synaptic_spec_version()->*const u8{b"CST-SYNAPTIC-V1\0".as_ptr()}
+#[no_mangle]pub extern "C" fn cst_rust_synaptic_affinity(a:*const f64,b:*const f64,len:usize,sigma:f64,out:*mut f64)->i32{if a.is_null()||b.is_null()||out.is_null(){return 1}if len==0||sigma<=0.0{return 2}let(a,b)=unsafe{(slice::from_raw_parts(a,len),slice::from_raw_parts(b,len))};match SynapticFunction::new(sigma,.5).and_then(|f|f.affinity(a,b)){Ok(v)=>{unsafe{*out=v};0},Err(_)=>2}}
+#[no_mangle]pub extern "C" fn cst_rust_synaptic_blend(s:f64,a:f64,g:f64,out:*mut f64)->i32{if out.is_null(){return 1}match SynapticFunction::new(1.0,g).and_then(|f|f.blend(s,a,None)){Ok(v)=>{unsafe{*out=v};0},Err(_)=>2}}
+#[no_mangle]pub extern "C" fn cst_rust_synaptic_state_step(state:*mut f64,signal:*const f64,len:usize,decay:f64,gain:f64,dt:f64)->i32{if state.is_null()||signal.is_null(){return 1}if len==0{return 2}let s=unsafe{slice::from_raw_parts(state,len)};let u=unsafe{slice::from_raw_parts(signal,len)};match SynapticFunction::default().step(s,u,decay,gain,dt){Ok(v)=>{unsafe{slice::from_raw_parts_mut(state,len)}.copy_from_slice(&v);0},Err(_)=>2}}

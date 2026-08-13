@@ -1,25 +1,22 @@
 //! Cosmic Rust: a dependency-free Rust implementation layer for the CST/COSMOS SDK.
-//!
-//! The crate keeps the same engineering boundaries as the Python and C++ layers:
-//! persistent dynamic state, state affinity, memory, association, nonlinear dynamics,
-//! events, preflight checks, and replaceable integration traits.
-
 pub mod adapters;
 pub mod dynamics;
 pub mod event;
+pub mod ffi;
 pub mod hebbian;
 pub mod memory;
 pub mod preflight;
 pub mod runtime;
 pub mod state;
 pub mod synapse;
-
-pub use adapters::{EntropySource, ModelAdapter, SensorAdapter};
+pub mod synaptic;
+pub use adapters::{EntropySource,ModelAdapter,SensorAdapter};
 pub use dynamics::Lorenz;
-pub use event::{Event, EventBus};
+pub use event::{Event,EventBus};
 pub use hebbian::HebbianMemory;
-pub use memory::{MemoryRecord, SemanticMemory};
-pub use preflight::{check_preflight, PreflightReport};
+pub use memory::{MemoryRecord,SemanticMemory};
+pub use preflight::{check_preflight,PreflightReport};
 pub use runtime::CosmicRuntime;
-pub use state::{Dyn12, Dyn42, Dyn54, DynamicState};
-pub use synapse::{GaussianSynapse, KernelDiagnostics};
+pub use state::{Dyn12,Dyn42,Dyn54,DynamicState};
+pub use synapse::{GaussianSynapse,KernelDiagnostics};
+pub use synaptic::{gated_blend,gaussian_affinity,state_step,SynapticFunction};

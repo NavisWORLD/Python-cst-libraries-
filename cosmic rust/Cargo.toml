@@ -12,6 +12,7 @@ categories = ["algorithms", "science"]
 [lib]
 name = "cosmic_rust"
 path = "src/lib.rs"
+crate-type = ["rlib", "cdylib", "staticlib"]
 
 [features]
 default = []

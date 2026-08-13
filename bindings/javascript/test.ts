@@ -1,0 +1,1 @@
+import{SynapticFunction,gaussianAffinity}from'./synaptic.js';const f=new SynapticFunction({sigma:.75,gate:.35});const h:number=gaussianAffinity([0,1,-1,.5],[.5,.5,-.5,1],.75);const o:number[]=f.step([.1,-.2,.3,-.4],[1,-.5,.25,-1],{decay:.92,gain:1.2,dt:.5});if(!(h>0&&o.length===4))throw Error('typescript declaration conformance');
